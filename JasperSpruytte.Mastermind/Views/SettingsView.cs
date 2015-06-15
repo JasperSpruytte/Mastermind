@@ -3,14 +3,14 @@ using JasperSpruytte.MastermindWindows.Properties;
 using System;
 using System.Windows.Forms;
 
-namespace JasperSpruytte.MastermindWindows.GUI
+namespace JasperSpruytte.MastermindWindows.Views
 {
-    public partial class frmSettings : Form
+    public partial class SettingsView : Form
     {
         private frmMain _frmMain;
         private Settings _settings;
 
-        public frmSettings(frmMain main)
+        public SettingsView(frmMain main)
         {
             InitializeComponent();
             _frmMain = main;

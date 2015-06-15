@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\packages\FakeItEasy.1.25.2\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
@@ -59,12 +62,16 @@
     <Compile Include="PegTests.cs" />
     <Compile Include="FeedbackTests.cs" />
     <Compile Include="MastermindAIPlayerTests.cs" />
+    <Compile Include="GameViewPresenterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JasperSpruytte.Mastermind\JasperSpruytte.Mastermind.csproj">
       <Project>{97cd1ef2-4c96-42c9-b3da-ac20ab737f04}</Project>
       <Name>JasperSpruytte.Mastermind</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -1,4 +1,4 @@
-﻿namespace JasperSpruytte.MastermindWindows.GUI
+﻿namespace JasperSpruytte.MastermindWindows.Views
 {
     partial class frmMain
     {

@@ -46,41 +46,43 @@
   <ItemGroup>
     <Compile Include="Game\Feedback.cs" />
     <Compile Include="Game\MastermindAIPlayer.cs" />
-    <Compile Include="GUI\frmAbout.cs">
+    <Compile Include="Presenters\GameViewPresenter.cs" />
+    <Compile Include="Views\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\frmAbout.Designer.cs">
+    <Compile Include="Views\frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\frmMain.cs">
+    <Compile Include="Views\GameView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="Views\GameView.Designer.cs">
+      <DependentUpon>GameView.cs</DependentUpon>
     </Compile>
     <Compile Include="Game\ISecretCodeGenerator.cs" />
     <Compile Include="Game\Mastermind.cs" />
     <Compile Include="Game\ColorSequence.cs" />
     <Compile Include="Game\ColorPeg.cs" />
-    <Compile Include="GUI\frmSettings.cs">
+    <Compile Include="Views\IGameView.cs" />
+    <Compile Include="Views\SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\frmSettings.Designer.cs">
-      <DependentUpon>frmSettings.cs</DependentUpon>
+    <Compile Include="Views\SettingsView.Designer.cs">
+      <DependentUpon>SettingsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game\RandomPatternGenerator.cs" />
     <Compile Include="SavingLoading\MastermindDAL.cs" />
     <Compile Include="SavingLoading\MastermindMemento.cs" />
-    <EmbeddedResource Include="GUI\frmAbout.resx">
+    <EmbeddedResource Include="Views\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="Views\GameView.resx">
+      <DependentUpon>GameView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\frmSettings.resx">
-      <DependentUpon>frmSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Views\SettingsView.resx">
+      <DependentUpon>SettingsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

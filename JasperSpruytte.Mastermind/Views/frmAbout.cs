@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JasperSpruytte.MastermindWindows.GUI
+namespace JasperSpruytte.MastermindWindows.Views
 {
     public partial class frmAbout : Form
     {

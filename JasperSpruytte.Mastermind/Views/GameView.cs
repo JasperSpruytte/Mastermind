@@ -1,4 +1,5 @@
 ﻿using JasperSpruytte.MastermindWindows.Game;
+using JasperSpruytte.MastermindWindows.Presenters;
 using JasperSpruytte.MastermindWindows.Properties;
 using JasperSpruytte.MastermindWindows.SavingLoading;
 using System;
@@ -7,9 +8,9 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace JasperSpruytte.MastermindWindows.GUI
+namespace JasperSpruytte.MastermindWindows.Views
 {
-    public partial class frmMain : Form
+    public partial class frmMain : Form, IGameView
     {
         private Mastermind _mastermind;
         private MastermindAIPlayer _computerPlayer;
@@ -22,6 +23,7 @@ namespace JasperSpruytte.MastermindWindows.GUI
         private const int HorizontalSpaceBetweenLabels = 6;
         private const int SpaceFromTopForColorLabels = 15;
         private const int SpaceBetweenGroupboxes = 5;
+        private GameViewPresenter presenter;
         
         public frmMain()
         {
@@ -55,6 +57,7 @@ namespace JasperSpruytte.MastermindWindows.GUI
                 _mastermind = null;
                 _computerPlayer = null;
             }
+            presenter = new GameViewPresenter(this, _mastermind);
             
             btnAdvance.Enabled = true;
             this.Refresh();
@@ -273,7 +276,7 @@ namespace JasperSpruytte.MastermindWindows.GUI
             try
             {
                 ColorSequence guess = GetMostRecentGuess();
-                _mastermind.Guess(guess);
+                presenter.AdvanceTurn(guess);
                 int previousTurn = _mastermind.CurrentTurn - 1;
                 ShowFeedback(_mastermind.AllFeedback[previousTurn], previousTurn);
                 SetTurn(_mastermind.LengthOfSecretCode, _settings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
@@ -282,6 +285,7 @@ namespace JasperSpruytte.MastermindWindows.GUI
                     EndGame();
                 else
                     SetLocationOfBtnAdvance(_mastermind.CurrentTurn);
+                
             }
             catch (Exception error)
             {
@@ -309,7 +313,7 @@ namespace JasperSpruytte.MastermindWindows.GUI
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmSettings settings = new frmSettings(this);
+            SettingsView settings = new SettingsView(this);
             settings.ShowDialog();
         }
 
@@ -451,7 +455,6 @@ namespace JasperSpruytte.MastermindWindows.GUI
             string message = (userWon) ? "You win!" : "You lose!";
             MessageBox.Show(message);
             ShowSecretCode();
-            tsmiSave.Enabled = false;
         }
 
         private void EnableColorLabel(Label lblColor)
@@ -543,6 +546,11 @@ namespace JasperSpruytte.MastermindWindows.GUI
         {
             frmAbout about = new frmAbout();
             about.ShowDialog();
+        }
+
+        public void DisableSaving()
+        {
+            tsmiSave.Enabled = false;
         }
     }
 }

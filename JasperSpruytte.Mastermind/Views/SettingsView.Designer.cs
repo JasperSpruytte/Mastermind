@@ -1,6 +1,6 @@
-﻿namespace JasperSpruytte.MastermindWindows.GUI
+﻿namespace JasperSpruytte.MastermindWindows.Views
 {
-    partial class frmSettings
+    partial class SettingsView
     {
         /// <summary>
         /// Required designer variable.
