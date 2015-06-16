@@ -41,12 +41,10 @@ namespace JasperSpruytte.MastermindWindows.Views
         {
             _settings = Settings.Default;
             _computerPlayer = null;
-            tsmiSave.Enabled = false;
             SetLocationOfBtnAdvance(0);
             SetupGame(_settings.NumberOfTurns, _settings.NumberOfColors, _settings.LengthOfSecretCode, _settings.UserIsGuessing, 0, false);
             if (_settings.UserIsGuessing)
             {
-                tsmiSave.Enabled = true;
                 SetUpBtnGuess();
                 _mastermind = new Mastermind(_settings.NumberOfTurns, _settings.NumberOfColors, _settings.LengthOfSecretCode);
             }
@@ -58,6 +56,7 @@ namespace JasperSpruytte.MastermindWindows.Views
                 _computerPlayer = null;
             }
             presenter = new GameViewPresenter(this, _mastermind);
+            presenter.StartNewGame();
             
             btnAdvance.Enabled = true;
             this.Refresh();
@@ -134,15 +133,7 @@ namespace JasperSpruytte.MastermindWindows.Views
             }
         }
 
-        private void ShowSecretCode()
-        {
-            ColorSequence secretCode = _mastermind.GetSecretCode();
-            Label[,] secretCodeLabel = grbSecretCode.Tag as Label[,];
-            for (int colorNumber = 0; colorNumber < _mastermind.LengthOfSecretCode; colorNumber++)
-            {
-                secretCodeLabel[colorNumber, 0].BackColor = secretCode[colorNumber].Color;
-            }
-        }
+
 
         private void InitializeLabelGroupBox(GroupBox groupbox, int numberOfColumns, int numberOfRows, int x, int y, int spaceFromTop, int labelDimension, int verticalSpaceBetweenLabels)
         {
@@ -357,7 +348,6 @@ namespace JasperSpruytte.MastermindWindows.Views
 
                 _mastermind = new Mastermind(settings.NumberOfTurns, settings.NumberOfColors, secretCode);
                 _computerPlayer = new MastermindAIPlayer(_mastermind);
-                tsmiSave.Enabled = true;
 
                 _computerPlayer.MakeGuess();
                 ColorSequence guess = _mastermind.Guesses[0];
@@ -454,7 +444,6 @@ namespace JasperSpruytte.MastermindWindows.Views
             bool userWon = _settings.UserIsGuessing == _mastermind.PlayerWon;
             string message = (userWon) ? "You win!" : "You lose!";
             MessageBox.Show(message);
-            ShowSecretCode();
         }
 
         private void EnableColorLabel(Label lblColor)
@@ -551,6 +540,21 @@ namespace JasperSpruytte.MastermindWindows.Views
         public void DisableSaving()
         {
             tsmiSave.Enabled = false;
+        }
+
+        public void EnableSaving()
+        {
+            tsmiSave.Enabled = true;
+        }
+
+        public void ShowSecretCode()
+        {
+            ColorSequence secretCode = _mastermind.GetSecretCode();
+            Label[,] secretCodeLabel = grbSecretCode.Tag as Label[,];
+            for (int colorNumber = 0; colorNumber < _mastermind.LengthOfSecretCode; colorNumber++)
+            {
+                secretCodeLabel[colorNumber, 0].BackColor = secretCode[colorNumber].Color;
+            }
         }
     }
 }

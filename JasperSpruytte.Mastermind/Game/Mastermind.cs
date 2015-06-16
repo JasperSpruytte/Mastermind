@@ -188,6 +188,23 @@ namespace JasperSpruytte.MastermindWindows.Game
             };
         }
 
+        public void ResetGame()
+        {
+            ResetGame(false);
+        }
+
+        public void ResetGame(bool generateNewSecretCode)
+        {
+            CurrentTurn = 0;
+            Guesses = new List<ColorSequence>();
+            AllFeedback = new List<Feedback>();
+            if (generateNewSecretCode)
+            {
+                ISecretCodeGenerator codeGenerator = new RandomPatternGenerator();
+                SecretCode = codeGenerator.GenerateSecretCode(NumberOfColors, LengthOfSecretCode);
+            }
+        }
+
         #endregion Behavior
     }
 }

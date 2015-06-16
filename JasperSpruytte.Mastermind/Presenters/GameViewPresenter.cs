@@ -15,16 +15,24 @@ namespace JasperSpruytte.MastermindWindows.Presenters
 
         public GameViewPresenter(IGameView view, Mastermind game)
         {
-            // TODO: Complete member initialization
             this.view = view;
             this.game = game;
+        }
+
+        public void StartNewGame()
+        {
+            view.EnableSaving();
         }
 
         public void AdvanceTurn(ColorSequence guess)
         {
             game.Guess(guess);
             if (game.GameOver)
+            {
                 view.DisableSaving();
+                view.ShowSecretCode();
+            }
         }
+
     }
 }

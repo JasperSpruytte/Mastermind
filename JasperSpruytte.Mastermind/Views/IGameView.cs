@@ -8,6 +8,8 @@ namespace JasperSpruytte.MastermindWindows.Views
 {
     public interface IGameView
     {
+        void EnableSaving();
         void DisableSaving();
+        void ShowSecretCode();
     }
 }

@@ -229,5 +229,27 @@ namespace MastermindUnitTests
             ColorSequence secretCode = new ColorSequence("0000");
             Mastermind mastermind = new Mastermind(5, 5, secretCode);
         }
+
+        [TestMethod]
+        public void Mastermind_ResetGame_ResetsState()
+        {
+            int expectedTurn = 0;
+            int expectedNumberOfGuesses = 0;
+            int expectedNumberOfFeedback = 0;
+            int colorNumber1 = 1;
+            int colorNumber2 = 2;
+            ColorSequence secretCode = new ColorSequence(colorNumber2, colorNumber2, colorNumber2, colorNumber1);
+            ColorSequence guess = new ColorSequence(colorNumber1, colorNumber1, colorNumber1, colorNumber1);
+            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
+            Mastermind mastermind = mf.CreateMastermind(codeGenerator: codeGenerator);
+
+            mastermind.Guess(guess);
+            mastermind.ResetGame();
+
+            Assert.AreEqual(expectedTurn, mastermind.CurrentTurn);
+            Assert.AreEqual(expectedNumberOfGuesses, mastermind.Guesses.Count);
+            Assert.AreEqual(expectedNumberOfFeedback, mastermind.AllFeedback.Count);
+            
+        }
     }
 }
