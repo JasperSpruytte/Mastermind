@@ -13,10 +13,13 @@ namespace JasperSpruytte.MastermindWindows.Presenters
         private Views.IGameView view;
         private Game.Mastermind game;
 
-        public GameViewPresenter(IGameView view, Mastermind game)
+        public GameViewPresenter(IGameView view, IMastermindSettings mastermindSettings, ColorSequence secretCode = null)
         {
             this.view = view;
-            this.game = game;
+            if (secretCode != null)
+                game = new Mastermind(mastermindSettings, secretCode);
+            else
+                game = new Mastermind(mastermindSettings);
         }
 
         public void StartNewGame()
@@ -34,5 +37,7 @@ namespace JasperSpruytte.MastermindWindows.Presenters
             }
         }
 
+
+        public IMastermindSettings MastermindSettings { get; private set; }
     }
 }

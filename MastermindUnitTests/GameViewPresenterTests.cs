@@ -11,7 +11,6 @@ namespace MastermindUnitTests
     public class GameViewPresenterTests
     {
         private ColorSequence secretCode;
-        private Mastermind game;
         private IGameView view;
         private GameViewPresenter presenter;
 
@@ -19,9 +18,11 @@ namespace MastermindUnitTests
         public void Initialize()
         {
             secretCode = new ColorSequence("1234");
-            game = new Mastermind(2, secretCode.Length, secretCode);
+            IMastermindSettings mastermindSettings = A.Fake<IMastermindSettings>();
+            mastermindSettings.NumberOfTurns = 2;
+            mastermindSettings.NumberOfColors = secretCode.Length;
             view = A.Fake<IGameView>();
-            presenter = new GameViewPresenter(view, game);
+            presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
         }
 
         [TestMethod]
@@ -62,5 +63,7 @@ namespace MastermindUnitTests
 
             A.CallTo(() => view.ShowSecretCode()).MustHaveHappened();
         }
+
+
     }
 }

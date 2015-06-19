@@ -7,10 +7,10 @@ namespace JasperSpruytte.MastermindWindows.Views
 {
     public partial class SettingsView : Form
     {
-        private frmMain _frmMain;
+        private GameView _frmMain;
         private Settings _settings;
 
-        public SettingsView(frmMain main)
+        public SettingsView(GameView main)
         {
             InitializeComponent();
             _frmMain = main;

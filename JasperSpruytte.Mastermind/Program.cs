@@ -17,7 +17,7 @@ namespace JasperSpruytte.MastermindWindows
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain());
+            Application.Run(new GameView());
         }
     }
 }

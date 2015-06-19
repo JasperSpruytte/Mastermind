@@ -11,6 +11,9 @@ namespace JasperSpruytte.MastermindWindows.Game
         public Mastermind(int numberOfTurns, int numberOfColors, int lengthOfSecretCode)
             : this(numberOfTurns, numberOfColors, lengthOfSecretCode, new RandomPatternGenerator()) { }
 
+        public Mastermind(IMastermindSettings settings)
+            : this(settings.NumberOfTurns, settings.NumberOfColors, settings.LengthOfSecretCode) { }
+
         public Mastermind(int numberOfTurns, int numberOfColors, int lengthOfSecretCode, ISecretCodeGenerator secretCodeGenerator)
         {
             this._numberOfTurns = numberOfTurns;
@@ -29,6 +32,9 @@ namespace JasperSpruytte.MastermindWindows.Game
             if (SecretCode.Contains(0))
                 throw new ArgumentException("The secret code is not completely filled in.");           
         }
+
+        public Mastermind(IMastermindSettings settings, ColorSequence secretCode) : this(settings.NumberOfTurns, settings.NumberOfColors, secretCode)
+        { }
 
         public Mastermind(MastermindMemento memento)
         {

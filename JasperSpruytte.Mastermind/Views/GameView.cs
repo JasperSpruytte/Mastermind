@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace JasperSpruytte.MastermindWindows.Views
 {
-    public partial class frmMain : Form, IGameView
+    public partial class GameView : Form, IGameView
     {
         private Mastermind _mastermind;
         private MastermindAIPlayer _computerPlayer;
-        private Settings _settings;
+        private IMastermindSettings mastermindSettings;
         private MastermindDAL _mastermindDAL;
         private const int ColorDimension = 25;
         private const int FeedbackDimension = 5;
@@ -25,7 +25,7 @@ namespace JasperSpruytte.MastermindWindows.Views
         private const int SpaceBetweenGroupboxes = 5;
         private GameViewPresenter presenter;
         
-        public frmMain()
+        public GameView()
         {
             InitializeComponent();
         }
@@ -39,14 +39,14 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         public void StartNewGame()
         {
-            _settings = Settings.Default;
+            mastermindSettings = new MastermindSettings();
             _computerPlayer = null;
             SetLocationOfBtnAdvance(0);
-            SetupGame(_settings.NumberOfTurns, _settings.NumberOfColors, _settings.LengthOfSecretCode, _settings.UserIsGuessing, 0, false);
-            if (_settings.UserIsGuessing)
+            SetupGame(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode, mastermindSettings.UserIsGuessing, 0, false);
+            if (mastermindSettings.UserIsGuessing)
             {
                 SetUpBtnGuess();
-                _mastermind = new Mastermind(_settings.NumberOfTurns, _settings.NumberOfColors, _settings.LengthOfSecretCode);
+                _mastermind = new Mastermind(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace JasperSpruytte.MastermindWindows.Views
                 _mastermind = null;
                 _computerPlayer = null;
             }
-            presenter = new GameViewPresenter(this, _mastermind);
+            presenter = new GameViewPresenter(this, mastermindSettings);
             presenter.StartNewGame();
             
             btnAdvance.Enabled = true;
@@ -188,10 +188,10 @@ namespace JasperSpruytte.MastermindWindows.Views
                 modifier = -1;
 
             int newPegNumber = peg.Number + modifier;
-            if (newPegNumber > _settings.NumberOfColors)
+            if (newPegNumber > mastermindSettings.NumberOfColors)
                 newPegNumber = 1;
             else if (newPegNumber < 1)
-                newPegNumber = _settings.NumberOfColors;
+                newPegNumber = mastermindSettings.NumberOfColors;
 
             ChangeLabelColor(lblColor, new ColorPeg(newPegNumber));
         }
@@ -270,7 +270,7 @@ namespace JasperSpruytte.MastermindWindows.Views
                 presenter.AdvanceTurn(guess);
                 int previousTurn = _mastermind.CurrentTurn - 1;
                 ShowFeedback(_mastermind.AllFeedback[previousTurn], previousTurn);
-                SetTurn(_mastermind.LengthOfSecretCode, _settings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
+                SetTurn(_mastermind.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
                 
                 if (_mastermind.GameOver) 
                     EndGame();
@@ -377,7 +377,7 @@ namespace JasperSpruytte.MastermindWindows.Views
                 {
                     EndGame();
                 }
-                SetTurn(_settings.LengthOfSecretCode, _settings.UserIsGuessing, _mastermind.CurrentTurn - 1, _mastermind.GameOver);
+                SetTurn(mastermindSettings.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn - 1, _mastermind.GameOver);
                 SetLocationOfBtnAdvance(_mastermind.CurrentTurn - 1);
             }
             catch (Exception error)
@@ -441,7 +441,7 @@ namespace JasperSpruytte.MastermindWindows.Views
         private void EndGame()
         {
             btnAdvance.Enabled = false;
-            bool userWon = _settings.UserIsGuessing == _mastermind.PlayerWon;
+            bool userWon = mastermindSettings.UserIsGuessing == _mastermind.PlayerWon;
             string message = (userWon) ? "You win!" : "You lose!";
             MessageBox.Show(message);
         }
@@ -454,7 +454,7 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void tsmiSave_Click(object sender, EventArgs e)
         {
-            _mastermindDAL.Save(_mastermind.CreateMemento(_settings.UserIsGuessing));
+            _mastermindDAL.Save(_mastermind.CreateMemento(mastermindSettings.UserIsGuessing));
             ShowSavedGamesMenu();
         }
 

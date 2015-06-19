@@ -45,7 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Feedback.cs" />
+    <Compile Include="Game\IMastermindSettings.cs" />
     <Compile Include="Game\MastermindAIPlayer.cs" />
+    <Compile Include="Game\MastermindSettings.cs" />
     <Compile Include="Presenters\GameViewPresenter.cs" />
     <Compile Include="Views\frmAbout.cs">
       <SubType>Form</SubType>

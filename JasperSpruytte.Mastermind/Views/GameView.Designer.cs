@@ -1,6 +1,6 @@
 ﻿namespace JasperSpruytte.MastermindWindows.Views
 {
-    partial class frmMain
+    partial class GameView
     {
         /// <summary>
         /// Required designer variable.
