@@ -34,18 +34,17 @@ namespace JasperSpruytte.MastermindWindows.Views
         {
             _mastermindDAL = new MastermindDAL();
             ShowSavedGamesMenu();
-            StartNewGame();
+            mastermindSettings = new MastermindSettings();
+            presenter = new GameViewPresenter(this, mastermindSettings);
+            presenter.StartNewGame();
+            //StartNewGame();
         }
 
         public void StartNewGame()
         {
-            mastermindSettings = new MastermindSettings();
             _computerPlayer = null;
-            SetLocationOfBtnAdvance(0);
-            SetupGame(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode, mastermindSettings.UserIsGuessing, 0, false);
             if (mastermindSettings.UserIsGuessing)
             {
-                SetUpBtnGuess();
                 _mastermind = new Mastermind(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode);
             }
             else
@@ -55,11 +54,9 @@ namespace JasperSpruytte.MastermindWindows.Views
                 _mastermind = null;
                 _computerPlayer = null;
             }
-            presenter = new GameViewPresenter(this, mastermindSettings);
-            presenter.StartNewGame();
             
-            btnAdvance.Enabled = true;
-            this.Refresh();
+            
+
         }
 
         private void SetupGame(int numberOfTurns, int numberOfColors, int lengthOfSecretCode, bool userIsGuessing, int turn, bool gameOVer)
@@ -263,25 +260,16 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void btnGuess_Click(object sender, EventArgs e)
         {
-            
-            try
-            {
-                ColorSequence guess = GetMostRecentGuess();
-                presenter.AdvanceTurn(guess);
-                int previousTurn = _mastermind.CurrentTurn - 1;
-                ShowFeedback(_mastermind.AllFeedback[previousTurn], previousTurn);
-                SetTurn(_mastermind.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
+            ColorSequence guess = GetMostRecentGuess();
+            presenter.AdvanceTurn(guess);
+            int previousTurn = _mastermind.CurrentTurn - 1;
+            ShowFeedback(_mastermind.AllFeedback[previousTurn], previousTurn);
+            SetTurn(_mastermind.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
                 
-                if (_mastermind.GameOver) 
-                    EndGame();
-                else
-                    SetLocationOfBtnAdvance(_mastermind.CurrentTurn);
-                
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.Message);
-            }
+            if (_mastermind.GameOver) 
+                EndGame();
+            else
+                SetLocationOfBtnAdvance(_mastermind.CurrentTurn);
         }
 
         private void ShowFeedback(Feedback feedback, int turn)
@@ -555,6 +543,26 @@ namespace JasperSpruytte.MastermindWindows.Views
             {
                 secretCodeLabel[colorNumber, 0].BackColor = secretCode[colorNumber].Color;
             }
+        }
+
+        public void InitializeUserGuessingMode(int numberOfTurns, int numberOfColors, int lengthOfSecretCode)
+        {
+            InitializeAvailableColorsGroupbox(numberOfColors);
+            InitializeGameboardGroupbox(numberOfTurns, lengthOfSecretCode, true);
+            InitializeFeedbackGroupbox(numberOfTurns, lengthOfSecretCode);
+            InitializeSecretCodeGroupbox(lengthOfSecretCode, true);
+            SetTurn(lengthOfSecretCode, true, 0, false);
+            this.Width = ((btnAdvance.Right > grbAvailableColors.Right) ? btnAdvance.Right : grbAvailableColors.Right) + 40;
+            this.Height = grbSecretCode.Bottom + 50;
+            SetLocationOfBtnAdvance(0);
+            SetUpBtnGuess();
+            btnAdvance.Enabled = true;
+            this.Refresh();
+        }
+
+        public void ShowErrorMessage(string errorMessage)
+        {
+            MessageBox.Show(errorMessage);
         }
     }
 }

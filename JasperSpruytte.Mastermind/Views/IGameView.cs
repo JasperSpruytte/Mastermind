@@ -11,5 +11,7 @@ namespace JasperSpruytte.MastermindWindows.Views
         void EnableSaving();
         void DisableSaving();
         void ShowSecretCode();
+        void InitializeUserGuessingMode(int numberOfTurns, int numberOfColors, int lengthOfSecretCode);
+        void ShowErrorMessage(string errorMessage);
     }
 }

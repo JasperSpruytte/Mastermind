@@ -13,12 +13,13 @@ namespace MastermindUnitTests
         private ColorSequence secretCode;
         private IGameView view;
         private GameViewPresenter presenter;
+        private IMastermindSettings mastermindSettings;
 
         [TestInitialize]
         public void Initialize()
         {
             secretCode = new ColorSequence("1234");
-            IMastermindSettings mastermindSettings = A.Fake<IMastermindSettings>();
+            mastermindSettings = A.Fake<IMastermindSettings>();
             mastermindSettings.NumberOfTurns = 2;
             mastermindSettings.NumberOfColors = secretCode.Length;
             view = A.Fake<IGameView>();
@@ -64,6 +65,26 @@ namespace MastermindUnitTests
             A.CallTo(() => view.ShowSecretCode()).MustHaveHappened();
         }
 
+        [TestMethod]
+        public void GameViewPresenter_StartNewGame_InitializesUserGuessingMode()
+        {
+            presenter.StartNewGame();
 
+            A.CallTo(() => view.InitializeUserGuessingMode(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_ViewShowsErrorMessageWhenExceptionIsThrown()
+        {
+            presenter.AdvanceTurn(null);
+
+            A.CallTo(() => view.ShowErrorMessage(A<string>.That.Not.IsNullOrEmpty())).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_ViewShowsFeedbackOfMostRecentGuess()
+        {
+
+        }
     }
 }
