@@ -24,14 +24,17 @@ namespace MastermindUnitTests
             mastermindSettings.NumberOfColors = secretCode.Length;
             view = A.Fake<IGameView>();
             presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
+            ColorSequence guess = new ColorSequence("1235");
+            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
         }
 
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_DisablesSavingWhenGameIsOver()
         {
             ColorSequence guess = secretCode;
+            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
 
-            presenter.AdvanceTurn(guess);
+            presenter.AdvanceTurn();
 
             A.CallTo(() => view.DisableSaving()).MustHaveHappened();
         }
@@ -39,9 +42,7 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_DoesNotDisableSavingIfGameIsNotOver()
         {
-            ColorSequence guess = new ColorSequence("1235");
-
-            presenter.AdvanceTurn(guess);
+            presenter.AdvanceTurn();
 
             A.CallTo(() => view.DisableSaving()).MustNotHaveHappened();
         }
@@ -49,9 +50,10 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_StartNewGame_SavingEnabledWhenStartingNewIfUserIsGuessing()
         {
-            ColorSequence guess = new ColorSequence("1234");
+            ColorSequence guess = secretCode;
+            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
 
-            presenter.AdvanceTurn(guess);
+            presenter.AdvanceTurn();
             presenter.StartNewGame();
 
             A.CallTo(() => view.EnableSaving()).MustHaveHappened();
@@ -60,7 +62,8 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_RevealsSecretCodeWhenGameIsOver()
         {
-            presenter.AdvanceTurn(secretCode);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(secretCode);
+            presenter.AdvanceTurn();
 
             A.CallTo(() => view.ShowSecretCode()).MustHaveHappened();
         }
@@ -76,7 +79,8 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_ViewShowsErrorMessageWhenExceptionIsThrown()
         {
-            presenter.AdvanceTurn(null);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(null);
+            presenter.AdvanceTurn();
 
             A.CallTo(() => view.ShowErrorMessage(A<string>.That.Not.IsNullOrEmpty())).MustHaveHappened();
         }
@@ -84,7 +88,39 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_ViewShowsFeedbackOfMostRecentGuess()
         {
+            Mastermind game = new Mastermind(mastermindSettings, secretCode);
+            presenter = new GameViewPresenter(view, game);
 
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.ShowFeedback(game.AllFeedback)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_GetsMostRecentGuessFromView()
+        {
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.GetGuess(secretCode.Length, 0)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_DisablesPreviousGuessingRowAndEnablesNewGuessingRown()
+        {
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.DisableGuessing()).MustHaveHappened();
+            A.CallTo(() => view.EnableGuessing(1)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_DoesNotEnableGuessingIfGameIsOver()
+        {
+            A.CallTo(() => view.GetGuess(secretCode.Length, 0)).Returns(secretCode);
+
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.EnableGuessing(A<int>.Ignored)).MustNotHaveHappened();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JasperSpruytte.MastermindWindows.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,9 @@ namespace JasperSpruytte.MastermindWindows.Views
         void ShowSecretCode();
         void InitializeUserGuessingMode(int numberOfTurns, int numberOfColors, int lengthOfSecretCode);
         void ShowErrorMessage(string errorMessage);
+        void ShowFeedback(List<Feedback> feedback);
+        ColorSequence GetGuess(int lengthOfSecretCode, int turn);
+        void DisableGuessing();
+        void EnableGuessing(int turn);
     }
 }

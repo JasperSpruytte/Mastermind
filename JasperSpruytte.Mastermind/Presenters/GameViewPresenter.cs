@@ -24,16 +24,23 @@ namespace JasperSpruytte.MastermindWindows.Presenters
                 game = new Mastermind(mastermindSettings);
         }
 
+        public GameViewPresenter(IGameView view, Mastermind game)
+        {
+            this.view = view;
+            this.game = game;
+        }
+
         public void StartNewGame()
         {
             view.EnableSaving();
             view.InitializeUserGuessingMode(settings.NumberOfTurns, settings.NumberOfColors, settings.LengthOfSecretCode);
         }
 
-        public void AdvanceTurn(ColorSequence guess)
+        public void AdvanceTurn()
         {
             try
             {
+                ColorSequence guess = view.GetGuess(game.LengthOfSecretCode, game.CurrentTurn);
                 game.Guess(guess);
             }
             catch (Exception e)
@@ -41,14 +48,18 @@ namespace JasperSpruytte.MastermindWindows.Presenters
                 view.ShowErrorMessage(e.Message);
             }
 
+            view.ShowFeedback(game.AllFeedback);
+            view.DisableGuessing();
+
             if (game.GameOver)
             {
                 view.DisableSaving();
                 view.ShowSecretCode();
             }
+            else
+            {
+                view.EnableGuessing(game.CurrentTurn);
+            }
         }
-
-
-        public IMastermindSettings MastermindSettings { get; private set; }
     }
 }

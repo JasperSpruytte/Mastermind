@@ -3,6 +3,7 @@ using JasperSpruytte.MastermindWindows.Presenters;
 using JasperSpruytte.MastermindWindows.Properties;
 using JasperSpruytte.MastermindWindows.SavingLoading;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
@@ -37,7 +38,6 @@ namespace JasperSpruytte.MastermindWindows.Views
             mastermindSettings = new MastermindSettings();
             presenter = new GameViewPresenter(this, mastermindSettings);
             presenter.StartNewGame();
-            //StartNewGame();
         }
 
         public void StartNewGame()
@@ -260,10 +260,7 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void btnGuess_Click(object sender, EventArgs e)
         {
-            ColorSequence guess = GetMostRecentGuess();
-            presenter.AdvanceTurn(guess);
-            int previousTurn = _mastermind.CurrentTurn - 1;
-            ShowFeedback(_mastermind.AllFeedback[previousTurn], previousTurn);
+            presenter.AdvanceTurn();
             SetTurn(_mastermind.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
                 
             if (_mastermind.GameOver) 
@@ -294,19 +291,6 @@ namespace JasperSpruytte.MastermindWindows.Views
         {
             SettingsView settings = new SettingsView(this);
             settings.ShowDialog();
-        }
-
-        private ColorSequence GetMostRecentGuess()
-        {
-            ColorSequence guess = new ColorSequence(_mastermind.LengthOfSecretCode);
-            Label[,] gameboard = grbGameboard.Tag as Label[,];
-
-            for (int colorIndex = 0; colorIndex < _mastermind.LengthOfSecretCode; colorIndex++)
-            {
-                guess[colorIndex] =  new ColorPeg((int)gameboard[colorIndex, _mastermind.CurrentTurn].Tag);
-            }
-
-            return guess;
         }
 
         private void ShowGuess(ColorSequence guess, int turn)
@@ -563,6 +547,37 @@ namespace JasperSpruytte.MastermindWindows.Views
         public void ShowErrorMessage(string errorMessage)
         {
             MessageBox.Show(errorMessage);
+        }
+
+        public void ShowFeedback(List<Feedback> feedback)
+        {
+            for (int turn = 0; turn < feedback.Count; turn++)
+            {
+                ShowFeedback(feedback[turn], turn);
+            }
+        }
+
+        public ColorSequence GetGuess(int lengthOfSecretCode, int turn)
+        {
+            ColorSequence guess = new ColorSequence(lengthOfSecretCode);
+            Label[,] gameboard = grbGameboard.Tag as Label[,];
+
+            for (int colorIndex = 0; colorIndex < lengthOfSecretCode; colorIndex++)
+            {
+                guess[colorIndex] = new ColorPeg((int)gameboard[colorIndex, turn].Tag);
+            }
+
+            return guess;
+        }
+
+        public void DisableGuessing()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EnableGuessing(int turn)
+        {
+            throw new NotImplementedException();
         }
     }
 }
