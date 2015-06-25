@@ -25,14 +25,14 @@ namespace MastermindUnitTests
             view = A.Fake<IGameView>();
             presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
             ColorSequence guess = new ColorSequence("1235");
-            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(guess);
         }
 
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_DisablesSavingWhenGameIsOver()
         {
             ColorSequence guess = secretCode;
-            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(guess);
 
             presenter.AdvanceTurn();
 
@@ -51,7 +51,7 @@ namespace MastermindUnitTests
         public void GameViewPresenter_StartNewGame_SavingEnabledWhenStartingNewIfUserIsGuessing()
         {
             ColorSequence guess = secretCode;
-            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(guess);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(guess);
 
             presenter.AdvanceTurn();
             presenter.StartNewGame();
@@ -62,10 +62,10 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_RevealsSecretCodeWhenGameIsOver()
         {
-            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(secretCode);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(secretCode);
             presenter.AdvanceTurn();
 
-            A.CallTo(() => view.ShowSecretCode()).MustHaveHappened();
+            A.CallTo(() => view.ShowSecretCode(secretCode)).MustHaveHappened();
         }
 
         [TestMethod]
@@ -79,10 +79,10 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_ViewShowsErrorMessageWhenExceptionIsThrown()
         {
-            A.CallTo(() => view.GetGuess(A<int>.Ignored, A<int>.Ignored)).Returns(null);
+            A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(null);
             presenter.AdvanceTurn();
 
-            A.CallTo(() => view.ShowErrorMessage(A<string>.That.Not.IsNullOrEmpty())).MustHaveHappened();
+            A.CallTo(() => view.ShowMessage(A<string>.That.Not.IsNullOrEmpty())).MustHaveHappened();
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace MastermindUnitTests
         {
             presenter.AdvanceTurn();
 
-            A.CallTo(() => view.GetGuess(secretCode.Length, 0)).MustHaveHappened();
+            A.CallTo(() => view.GetGuess(0)).MustHaveHappened();
         }
 
         [TestMethod]
@@ -116,11 +116,32 @@ namespace MastermindUnitTests
         [TestMethod]
         public void GameViewPresenter_AdvanceTurn_DoesNotEnableGuessingIfGameIsOver()
         {
-            A.CallTo(() => view.GetGuess(secretCode.Length, 0)).Returns(secretCode);
+            A.CallTo(() => view.GetGuess(0)).Returns(secretCode);
 
             presenter.AdvanceTurn();
 
             A.CallTo(() => view.EnableGuessing(A<int>.Ignored)).MustNotHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_ShowsCorrectMessageWhenUserLoses()
+        {
+            mastermindSettings.NumberOfTurns = 1;
+            presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
+
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.ShowMessage("You lose!")).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_AdvanceTurn_ShowsCorrectMessageWhenUserWins()
+        {
+            A.CallTo(() => view.GetGuess(0)).Returns(secretCode);
+
+            presenter.AdvanceTurn();
+
+            A.CallTo(() => view.ShowMessage("You win!")).MustHaveHappened();
         }
     }
 }

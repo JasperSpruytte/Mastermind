@@ -11,11 +11,11 @@ namespace JasperSpruytte.MastermindWindows.Views
     {
         void EnableSaving();
         void DisableSaving();
-        void ShowSecretCode();
+        void ShowSecretCode(ColorSequence secretCode);
         void InitializeUserGuessingMode(int numberOfTurns, int numberOfColors, int lengthOfSecretCode);
-        void ShowErrorMessage(string errorMessage);
+        void ShowMessage(string message);
         void ShowFeedback(List<Feedback> feedback);
-        ColorSequence GetGuess(int lengthOfSecretCode, int turn);
+        ColorSequence GetGuess(int turn);
         void DisableGuessing();
         void EnableGuessing(int turn);
     }

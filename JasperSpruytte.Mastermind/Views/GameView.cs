@@ -261,12 +261,6 @@ namespace JasperSpruytte.MastermindWindows.Views
         private void btnGuess_Click(object sender, EventArgs e)
         {
             presenter.AdvanceTurn();
-            SetTurn(_mastermind.LengthOfSecretCode, mastermindSettings.UserIsGuessing, _mastermind.CurrentTurn, _mastermind.GameOver);
-                
-            if (_mastermind.GameOver) 
-                EndGame();
-            else
-                SetLocationOfBtnAdvance(_mastermind.CurrentTurn);
         }
 
         private void ShowFeedback(Feedback feedback, int turn)
@@ -284,7 +278,7 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StartNewGame();
+            presenter.StartNewGame();
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -519,11 +513,10 @@ namespace JasperSpruytte.MastermindWindows.Views
             tsmiSave.Enabled = true;
         }
 
-        public void ShowSecretCode()
+        public void ShowSecretCode(ColorSequence secretCode)
         {
-            ColorSequence secretCode = _mastermind.GetSecretCode();
             Label[,] secretCodeLabel = grbSecretCode.Tag as Label[,];
-            for (int colorNumber = 0; colorNumber < _mastermind.LengthOfSecretCode; colorNumber++)
+            for (int colorNumber = 0; colorNumber < secretCode.Length; colorNumber++)
             {
                 secretCodeLabel[colorNumber, 0].BackColor = secretCode[colorNumber].Color;
             }
@@ -544,9 +537,9 @@ namespace JasperSpruytte.MastermindWindows.Views
             this.Refresh();
         }
 
-        public void ShowErrorMessage(string errorMessage)
+        public void ShowMessage(string message)
         {
-            MessageBox.Show(errorMessage);
+            MessageBox.Show(message);
         }
 
         public void ShowFeedback(List<Feedback> feedback)
@@ -557,10 +550,12 @@ namespace JasperSpruytte.MastermindWindows.Views
             }
         }
 
-        public ColorSequence GetGuess(int lengthOfSecretCode, int turn)
+        public ColorSequence GetGuess(int turn)
         {
-            ColorSequence guess = new ColorSequence(lengthOfSecretCode);
             Label[,] gameboard = grbGameboard.Tag as Label[,];
+            int lengthOfSecretCode = gameboard.GetLength(0);
+            ColorSequence guess = new ColorSequence(lengthOfSecretCode);
+            
 
             for (int colorIndex = 0; colorIndex < lengthOfSecretCode; colorIndex++)
             {
@@ -572,12 +567,25 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         public void DisableGuessing()
         {
-            throw new NotImplementedException();
+            foreach (var control in grbGameboard.Controls)
+            {
+                Label lblPeg = control as Label;
+                lblPeg.Enabled = false;
+            }
+            btnAdvance.Enabled = false;
         }
 
         public void EnableGuessing(int turn)
         {
-            throw new NotImplementedException();
+            Label[,] gameboardArray = grbGameboard.Tag as Label[,];
+
+            for (int pegIndex = 0; pegIndex < gameboardArray.GetLength(0); pegIndex++)
+            {
+                EnableColorLabel(gameboardArray[pegIndex, turn]);
+            }
+
+            btnAdvance.Enabled = true;
+            SetLocationOfBtnAdvance(turn);
         }
     }
 }

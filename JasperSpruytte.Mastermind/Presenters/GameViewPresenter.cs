@@ -40,12 +40,12 @@ namespace JasperSpruytte.MastermindWindows.Presenters
         {
             try
             {
-                ColorSequence guess = view.GetGuess(game.LengthOfSecretCode, game.CurrentTurn);
+                ColorSequence guess = view.GetGuess(game.CurrentTurn);
                 game.Guess(guess);
             }
             catch (Exception e)
             {
-                view.ShowErrorMessage(e.Message);
+                view.ShowMessage(e.Message);
             }
 
             view.ShowFeedback(game.AllFeedback);
@@ -54,7 +54,9 @@ namespace JasperSpruytte.MastermindWindows.Presenters
             if (game.GameOver)
             {
                 view.DisableSaving();
-                view.ShowSecretCode();
+                view.ShowSecretCode(game.GetSecretCode());
+                string gameOverMessage = (game.PlayerWon) ? "You win!" : "You lose!";
+                view.ShowMessage(gameOverMessage);
             }
             else
             {
