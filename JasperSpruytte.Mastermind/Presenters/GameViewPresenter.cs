@@ -63,5 +63,12 @@ namespace JasperSpruytte.MastermindWindows.Presenters
                 view.EnableGuessing(game.CurrentTurn);
             }
         }
+
+        public void OpenSettingsView()
+        {
+            ISettingsView settingsView = new SettingsView();
+            SettingsViewPresenter settingsViewPresenter = new SettingsViewPresenter(settingsView, settings);
+            settingsViewPresenter.ShowView();
+        }
     }
 }

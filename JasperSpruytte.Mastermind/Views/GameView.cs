@@ -283,8 +283,7 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsView settings = new SettingsView(this);
-            settings.ShowDialog();
+            presenter.OpenSettingsView();
         }
 
         private void ShowGuess(ColorSequence guess, int turn)

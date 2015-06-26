@@ -49,6 +49,7 @@
     <Compile Include="Game\MastermindAIPlayer.cs" />
     <Compile Include="Game\MastermindSettings.cs" />
     <Compile Include="Presenters\GameViewPresenter.cs" />
+    <Compile Include="Presenters\SettingsViewPresenter.cs" />
     <Compile Include="Views\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,6 +67,7 @@
     <Compile Include="Game\ColorSequence.cs" />
     <Compile Include="Game\ColorPeg.cs" />
     <Compile Include="Views\IGameView.cs" />
+    <Compile Include="Views\ISettingsView.cs" />
     <Compile Include="Views\SettingsView.cs">
       <SubType>Form</SubType>
     </Compile>
