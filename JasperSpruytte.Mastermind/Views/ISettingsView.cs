@@ -1,4 +1,5 @@
-﻿using JasperSpruytte.MastermindWindows.Presenters;
+﻿using JasperSpruytte.MastermindWindows.Game;
+using JasperSpruytte.MastermindWindows.Presenters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace JasperSpruytte.MastermindWindows.Views
     public interface ISettingsView
     {
         SettingsViewPresenter Presenter { get; set; }
-        void SetSettings(int numberOfTurns, int numberOfColors, int lengthOfSecretCode, bool userIsGuessing);
+        IMastermindSettings MastermindSettings { get; set; }
         void ShowToUser();
+        void Close();
     }
 }

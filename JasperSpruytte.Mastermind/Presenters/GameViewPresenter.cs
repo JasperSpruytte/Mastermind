@@ -12,12 +12,11 @@ namespace JasperSpruytte.MastermindWindows.Presenters
     {
         private Views.IGameView view;
         private Game.Mastermind game;
-        private IMastermindSettings settings;
 
         public GameViewPresenter(IGameView view, IMastermindSettings mastermindSettings, ColorSequence secretCode = null)
         {
             this.view = view;
-            this.settings = mastermindSettings;
+            this.MastermindSettings = mastermindSettings;
             if (secretCode != null)
                 game = new Mastermind(mastermindSettings, secretCode);
             else
@@ -30,10 +29,17 @@ namespace JasperSpruytte.MastermindWindows.Presenters
             this.game = game;
         }
 
+        public IMastermindSettings MastermindSettings { get; private set; }
+
         public void StartNewGame()
         {
             view.EnableSaving();
-            view.InitializeUserGuessingMode(settings.NumberOfTurns, settings.NumberOfColors, settings.LengthOfSecretCode);
+            view.InitializeUserGuessingMode(MastermindSettings.NumberOfTurns, MastermindSettings.NumberOfColors, MastermindSettings.LengthOfSecretCode);
+        }
+
+        public void StartNewGame(IMastermindSettings mastermindSettings)
+        {
+
         }
 
         public void AdvanceTurn()
@@ -67,7 +73,7 @@ namespace JasperSpruytte.MastermindWindows.Presenters
         public void OpenSettingsView()
         {
             ISettingsView settingsView = new SettingsView();
-            SettingsViewPresenter settingsViewPresenter = new SettingsViewPresenter(settingsView, settings);
+            SettingsViewPresenter settingsViewPresenter = new SettingsViewPresenter(settingsView, this);
             settingsViewPresenter.ShowView();
         }
     }

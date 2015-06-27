@@ -68,5 +68,36 @@ namespace JasperSpruytte.MastermindWindows.Game
         {
             settings.Save();
         }
+
+
+        public int MinimumNumberOfTurns
+        {
+            get { return Mastermind.MinimumNumberOfTurns; }
+        }
+
+        public int MaximumNumberOfTurns
+        {
+            get { return Mastermind.MaximumNumberOfTurns; }
+        }
+
+        public int MinimumNumberOfColors
+        {
+            get { return Mastermind.MinimumNumberOfColors; }
+        }
+
+        public int MaximumNumberOfColors
+        {
+            get { return Mastermind.MaximumNumberOfColors; }
+        }
+
+        public int MinimumLengthOfSecretCode
+        {
+            get { return Mastermind.MinimumLengthOfSecretCode; }
+        }
+
+        public int MaximumLengthOfSecretCode
+        {
+            get { return Mastermind.MaximumLengthOfSecretCode; }
+        }
     }
 }

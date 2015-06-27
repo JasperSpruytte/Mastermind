@@ -13,6 +13,7 @@ namespace MastermindUnitTests.Presenters
         private ISettingsView view;
         private IMastermindSettings mastermindSettings;
         private SettingsViewPresenter presenter;
+        private GameViewPresenter gameViewPresenter;
 
         [TestInitialize]
         public void InitializeSettingsViewPresenter()
@@ -23,14 +24,16 @@ namespace MastermindUnitTests.Presenters
             mastermindSettings.NumberOfColors = 6;
             mastermindSettings.LengthOfSecretCode = 4;
             mastermindSettings.UserIsGuessing = true;
+            IGameView gameView = A.Fake<IGameView>();
+            gameViewPresenter = new GameViewPresenter(gameView, mastermindSettings);
 
-            presenter = new SettingsViewPresenter(view, mastermindSettings);
+            presenter = new SettingsViewPresenter(view, gameViewPresenter);
         }
 
         [TestMethod]
         public void SettingsViewPresenter_Constructor_SendsCorrectInitialValuesToView()
         {
-            A.CallTo(() => view.SetSettings(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode, mastermindSettings.UserIsGuessing)).MustHaveHappened();
+            Assert.AreEqual(view.MastermindSettings, mastermindSettings);
         }
 
         [TestMethod]
@@ -48,9 +51,22 @@ namespace MastermindUnitTests.Presenters
         }
 
         [TestMethod]
-        public void SettingsViewPresenter_Constructor_SetsSettingsLimits()
+        public void SettingsViewPresenter_Cancel_ClosesView()
         {
+            presenter.Cancel();
 
+            A.CallTo(() => view.Close()).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void SettingsViewPresenter_Save_GetsMastermindSettingsAndSavesThemAndStartsNewGame()
+        {
+            
+            presenter.Save();
+
+            A.CallTo(() => view.MastermindSettings).MustHaveHappened();
+            A.CallTo(() => mastermindSettings.Save()).MustHaveHappened();
+            A.CallTo(() => view.Close()).MustHaveHappened();
         }
     }
 }

@@ -12,18 +12,33 @@ namespace JasperSpruytte.MastermindWindows.Presenters
     {
         private ISettingsView view;
         private IMastermindSettings mastermindSettings;
+        private GameViewPresenter gameViewPresenter;
 
-        public SettingsViewPresenter(ISettingsView view, IMastermindSettings mastermindSettings)
+        public SettingsViewPresenter(ISettingsView view, GameViewPresenter gameViewPresenter)
         {
             this.view = view;
-            this.mastermindSettings = mastermindSettings;
+            this.mastermindSettings = gameViewPresenter.MastermindSettings;
+            this.gameViewPresenter = gameViewPresenter;
             view.Presenter = this;
-            view.SetSettings(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode, mastermindSettings.UserIsGuessing);
+            view.MastermindSettings = mastermindSettings;
         }
 
         public void ShowView()
         {
             view.ShowToUser();
+        }
+
+        public void Cancel()
+        {
+            view.Close();
+        }
+
+        public void Save()
+        {
+            mastermindSettings = view.MastermindSettings;
+            mastermindSettings.Save();
+            view.Close();
+            gameViewPresenter.StartNewGame(mastermindSettings);
         }
     }
 }

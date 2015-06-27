@@ -12,6 +12,12 @@ namespace JasperSpruytte.MastermindWindows.Game
         int NumberOfColors { get; set; }
         int LengthOfSecretCode { get; set; }
         bool UserIsGuessing { get; set; }
+        int MinimumNumberOfTurns { get; }
+        int MaximumNumberOfTurns { get; }
+        int MinimumNumberOfColors { get; }
+        int MaximumNumberOfColors { get; }
+        int MinimumLengthOfSecretCode { get; }
+        int MaximumLengthOfSecretCode { get; }
         void Save();
     }
 }

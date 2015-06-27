@@ -174,7 +174,6 @@
             this.Controls.Add(this.nudNumberOfTurns);
             this.Name = "frmSettings";
             this.Text = "Settings";
-            this.Load += new System.EventHandler(this.frmSettings_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfTurns)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNumberOfColors)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLengthOfSecretCode)).EndInit();
