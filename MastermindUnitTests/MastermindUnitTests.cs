@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JasperSpruytte.MastermindWindows.Game;
 using System.Diagnostics;
+using FakeItEasy;
 
 namespace MastermindUnitTests
 {
@@ -129,9 +130,8 @@ namespace MastermindUnitTests
         public void Mastermind_Guess_ReturnsCorrectFeedback()
         {
             ColorSequence secretCode = new ColorSequence(2, 3, 2);
-            ISecretCodeGenerator secretCodeGenerator = mf.CreateSecretCodeGeneratorMockup(secretCode);
             ColorSequence guess = new ColorSequence(1, 3, 2);
-            Mastermind mastermind = mf.CreateMastermind(lengthOfSecretCode: secretCode.Length, codeGenerator: secretCodeGenerator);
+            Mastermind mastermind = mf.CreateMastermind(lengthOfSecretCode: secretCode.Length, secretCode: secretCode);
             
             int expectedPegsInCorrectPlace = 2;
             int expectedPegsWithCorrectColor = 0;
@@ -146,7 +146,8 @@ namespace MastermindUnitTests
         public void Mastermind_Guess_GameIsOverAfterWhenTurnsAreUp()
         {
             int numberOfTurns = 3;
-            Mastermind mastermind = mf.CreateMastermind(numberOfTurns: numberOfTurns);
+            ColorSequence secretCode = new ColorSequence("1234");
+            Mastermind mastermind = mf.CreateMastermind(numberOfTurns: numberOfTurns, secretCode: secretCode);
             ColorSequence guess = mf.CreateFilledInPattern(mastermind.LengthOfSecretCode);
 
             for (int turn = 0; turn < numberOfTurns; turn++)
@@ -173,8 +174,7 @@ namespace MastermindUnitTests
         public void Mastermind_Guess_PlayerWinsWhenGuessingTheRightPattern()
         {
             ColorSequence secretCode = new ColorSequence(1, 2, 3, 4);
-            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
-            Mastermind mastermind = mf.CreateMastermind(codeGenerator: codeGenerator);
+            Mastermind mastermind = mf.CreateMastermind(secretCode: secretCode);
 
             mastermind.Guess(secretCode);
 
@@ -197,8 +197,7 @@ namespace MastermindUnitTests
             int colorNumber2 = 3;
             ColorSequence secretCode = new ColorSequence(colorNumber1, colorNumber1, colorNumber2, colorNumber2);
             ColorSequence guess = new ColorSequence(2, colorNumber2, colorNumber1, 1);
-            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
-            Mastermind mastermind = mf.CreateMastermind(codeGenerator: codeGenerator);
+            Mastermind mastermind = mf.CreateMastermind(secretCode: secretCode);
             Feedback expectedFeedback = new Feedback(0, 2);
 
             Feedback actualFeedback = mastermind.Guess(guess);
@@ -213,8 +212,7 @@ namespace MastermindUnitTests
             int colorNumber2 = 2;
             ColorSequence secretCode = new ColorSequence(colorNumber2, colorNumber2, colorNumber2, colorNumber1);
             ColorSequence guess = new ColorSequence(colorNumber1, colorNumber1, colorNumber1, colorNumber1);
-            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
-            Mastermind mastermind = mf.CreateMastermind(codeGenerator: codeGenerator);
+            Mastermind mastermind = mf.CreateMastermind(secretCode: secretCode);
             Feedback expectedFeedback = new Feedback(1, 0);
             
             Feedback actualFeedback = mastermind.Guess(guess);
@@ -227,7 +225,11 @@ namespace MastermindUnitTests
         public void Mastermind_Constructor_DoesNotAcceptSecretCodeThatIsNotFilledInCompletely()
         {
             ColorSequence secretCode = new ColorSequence("0000");
-            Mastermind mastermind = new Mastermind(5, 5, secretCode);
+            IMastermindSettings settings = mf.CreateMastermindSettings();
+            settings.NumberOfTurns = 5;
+            settings.NumberOfColors = 5;
+            settings.LengthOfSecretCode = secretCode.Length;
+            Mastermind mastermind = new Mastermind(settings, secretCode);
         }
 
         [TestMethod]
@@ -240,8 +242,7 @@ namespace MastermindUnitTests
             int colorNumber2 = 2;
             ColorSequence secretCode = new ColorSequence(colorNumber2, colorNumber2, colorNumber2, colorNumber1);
             ColorSequence guess = new ColorSequence(colorNumber1, colorNumber1, colorNumber1, colorNumber1);
-            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
-            Mastermind mastermind = mf.CreateMastermind(codeGenerator: codeGenerator);
+            Mastermind mastermind = mf.CreateMastermind(secretCode: secretCode);
 
             mastermind.Guess(guess);
             mastermind.ResetGame();

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JasperSpruytte.MastermindWindows.Game;
+using FakeItEasy;
 
 namespace MastermindUnitTests
 {
@@ -15,9 +16,9 @@ namespace MastermindUnitTests
         [TestInitialize]
         public void Initialize()
         {
-            _codeGenerator = new FixedCodeGenerator(new ColorSequence(1, 2, 3, 4));
+            ColorSequence secretCode = new ColorSequence(1, 2, 3, 4);
             _objectFactory = new TestObjectFactory();
-            _mastermind = _objectFactory.CreateMastermind(lengthOfSecretCode: 4, codeGenerator: _codeGenerator, numberOfTurns: 10);
+            _mastermind = _objectFactory.CreateMastermind(lengthOfSecretCode: 4, secretCode: secretCode, numberOfTurns: 10);
             _player = new MastermindAIPlayer(_mastermind);
         }
 
@@ -79,10 +80,12 @@ namespace MastermindUnitTests
         public void MastermindAIPlayer_MakeGuess_CanGuessASimpleSecretCode()
         {
             ColorSequence secretCode = new ColorSequence(1, 1, 1);
-            int numberOfColors = 2;
-            int numberOfTurns = Mastermind.MaximumNumberOfTurns;
-            ISecretCodeGenerator codeGenerator = new FixedCodeGenerator(secretCode);
-            Mastermind mastermind = new Mastermind(numberOfTurns, numberOfColors, secretCode.Length, codeGenerator);
+            TestObjectFactory factory = new TestObjectFactory();
+            IMastermindSettings settings = factory.CreateMastermindSettings();
+            settings.NumberOfColors = 2;
+            settings.NumberOfTurns = _mastermind.Settings.MaximumNumberOfTurns;
+            settings.LengthOfSecretCode = secretCode.Length;
+            Mastermind mastermind = new Mastermind(settings, secretCode);
             MastermindAIPlayer player = new MastermindAIPlayer(mastermind);
 
             while (!mastermind.GameOver)

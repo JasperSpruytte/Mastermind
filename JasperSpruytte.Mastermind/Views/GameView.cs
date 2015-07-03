@@ -16,7 +16,6 @@ namespace JasperSpruytte.MastermindWindows.Views
         private Mastermind _mastermind;
         private MastermindAIPlayer _computerPlayer;
         private IMastermindSettings mastermindSettings;
-        private MastermindDAL _mastermindDAL;
         private const int ColorDimension = 25;
         private const int FeedbackDimension = 5;
         private const int SpaceBetweenColors = 6;
@@ -33,30 +32,10 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            _mastermindDAL = new MastermindDAL();
-            ShowSavedGamesMenu();
+            IMastermindRepository repository = new MastermindDAL();
             mastermindSettings = new MastermindSettings();
-            presenter = new GameViewPresenter(this, mastermindSettings);
+            presenter = new GameViewPresenter(this, mastermindSettings, repository);
             presenter.StartNewGame();
-        }
-
-        public void StartNewGame()
-        {
-            _computerPlayer = null;
-            if (mastermindSettings.UserIsGuessing)
-            {
-                _mastermind = new Mastermind(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode);
-            }
-            else
-            {
-                btnAdvance.Text = "Start";
-                btnAdvance.Click += btnStart_Click;
-                _mastermind = null;
-                _computerPlayer = null;
-            }
-            
-            
-
         }
 
         private void SetupGame(int numberOfTurns, int numberOfColors, int lengthOfSecretCode, bool userIsGuessing, int turn, bool gameOVer)
@@ -299,31 +278,31 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            Settings settings = Properties.Settings.Default;
+            //Settings settings = Properties.Settings.Default;
 
-            try
-            {
-                Label[,] secretCodeLabel = grbSecretCode.Tag as Label[,];
-                ColorSequence secretCode = new ColorSequence(settings.LengthOfSecretCode);
-                for (int pegIndex = 0; pegIndex < settings.LengthOfSecretCode; pegIndex++)
-                {
-                    ColorPeg peg = new ColorPeg((int)secretCodeLabel[pegIndex, 0].Tag);
-                    secretCode[pegIndex] = peg;
-                }
+            //try
+            //{
+            //    Label[,] secretCodeLabel = grbSecretCode.Tag as Label[,];
+            //    ColorSequence secretCode = new ColorSequence(settings.LengthOfSecretCode);
+            //    for (int pegIndex = 0; pegIndex < settings.LengthOfSecretCode; pegIndex++)
+            //    {
+            //        ColorPeg peg = new ColorPeg((int)secretCodeLabel[pegIndex, 0].Tag);
+            //        secretCode[pegIndex] = peg;
+            //    }
 
-                _mastermind = new Mastermind(settings.NumberOfTurns, settings.NumberOfColors, secretCode);
-                _computerPlayer = new MastermindAIPlayer(_mastermind);
+            //    _mastermind = new Mastermind(settings.NumberOfTurns, settings.NumberOfColors, secretCode);
+            //    _computerPlayer = new MastermindAIPlayer(_mastermind);
 
-                _computerPlayer.MakeGuess();
-                ColorSequence guess = _mastermind.Guesses[0];
-                ShowGuess(guess, 0);
-                btnAdvance.Click -= btnStart_Click;
-                SetUpBtnGiveFeedback();
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show(error.Message);
-            }
+            //    _computerPlayer.MakeGuess();
+            //    ColorSequence guess = _mastermind.Guesses[0];
+            //    ShowGuess(guess, 0);
+            //    btnAdvance.Click -= btnStart_Click;
+            //    SetUpBtnGiveFeedback();
+            //}
+            //catch (Exception error)
+            //{
+            //    MessageBox.Show(error.Message);
+            //}
         }
 
         private void btnGiveFeedback_Click(object sender, EventArgs e)
@@ -419,41 +398,16 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void tsmiSave_Click(object sender, EventArgs e)
         {
-            _mastermindDAL.Save(_mastermind.CreateMemento(mastermindSettings.UserIsGuessing));
-            ShowSavedGamesMenu();
-        }
-
-        private void ShowSavedGamesMenu()
-        {
-            ToolStripItemCollection loadGames = tsmiSavedGames.DropDownItems;
-            loadGames.Clear();
-
-            foreach (MastermindMemento memento in _mastermindDAL.Mementos)
-            {
-                
-                string text = memento.CreatedOn + " Turn " + (memento.CurrentTurn + 1) + " out of " + memento.NumberOfTurns;
-                ToolStripMenuItem tsmiMemento = new ToolStripMenuItem(text);
-
-                ToolStripMenuItem tsmiLoad = new ToolStripMenuItem("Load");
-                tsmiLoad.Tag = memento;
-                tsmiLoad.Click += tsmiMemento_Click;
-                tsmiMemento.DropDownItems.Add(tsmiLoad);
-
-                ToolStripMenuItem tsmiDelete = new ToolStripMenuItem("Delete");
-                tsmiDelete.Tag = memento;
-                tsmiDelete.Click += tsmiDelete_Click;
-                tsmiMemento.DropDownItems.Add(tsmiDelete);
-
-                loadGames.Add(tsmiMemento);
-            }
+            //_mastermindDAL.Save(_mastermind.CreateMemento(mastermindSettings.UserIsGuessing));
+            //ShowSavedGamesMenu();
         }
 
         private void tsmiDelete_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem tsmiDelete = sender as ToolStripMenuItem;
-            MastermindMemento gameToDelete = tsmiDelete.Tag as MastermindMemento;
-            _mastermindDAL.Delete(gameToDelete);
-            ShowSavedGamesMenu();
+            //ToolStripMenuItem tsmiDelete = sender as ToolStripMenuItem;
+            //MastermindMemento gameToDelete = tsmiDelete.Tag as MastermindMemento;
+            //_mastermindDAL.Delete(gameToDelete);
+            //ShowSavedGamesMenu();
         }
 
         private void tsmiMemento_Click(object sender, EventArgs e)
@@ -585,6 +539,36 @@ namespace JasperSpruytte.MastermindWindows.Views
 
             btnAdvance.Enabled = true;
             SetLocationOfBtnAdvance(turn);
+        }
+
+        public void StartNewGame(IMastermindSettings mastermindSettings)
+        {
+            if (mastermindSettings.UserIsGuessing)
+                InitializeUserGuessingMode(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode);
+        }
+
+        public void ShowSavedGames(IReadOnlyCollection<MastermindMemento> mementos)
+        {
+            ToolStripItemCollection loadGames = tsmiSavedGames.DropDownItems;
+            loadGames.Clear();
+
+            foreach (MastermindMemento memento in mementos)
+            {
+                string text = memento.CreatedOn + " Turn " + (memento.CurrentTurn + 1) + " out of " + memento.NumberOfTurns;
+                ToolStripMenuItem tsmiMemento = new ToolStripMenuItem(text);
+
+                ToolStripMenuItem tsmiLoad = new ToolStripMenuItem("Load");
+                tsmiLoad.Tag = memento;
+                tsmiLoad.Click += tsmiMemento_Click;
+                tsmiMemento.DropDownItems.Add(tsmiLoad);
+
+                ToolStripMenuItem tsmiDelete = new ToolStripMenuItem("Delete");
+                tsmiDelete.Tag = memento;
+                tsmiDelete.Click += tsmiDelete_Click;
+                tsmiMemento.DropDownItems.Add(tsmiDelete);
+
+                loadGames.Add(tsmiMemento);
+            }
         }
     }
 }

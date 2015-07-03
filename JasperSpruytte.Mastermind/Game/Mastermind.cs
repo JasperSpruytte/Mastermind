@@ -8,39 +8,33 @@ namespace JasperSpruytte.MastermindWindows.Game
     {
         #region Constructors
 
-        public Mastermind(int numberOfTurns, int numberOfColors, int lengthOfSecretCode)
-            : this(numberOfTurns, numberOfColors, lengthOfSecretCode, new RandomPatternGenerator()) { }
-
-        public Mastermind(IMastermindSettings settings)
-            : this(settings.NumberOfTurns, settings.NumberOfColors, settings.LengthOfSecretCode) { }
-
-        public Mastermind(int numberOfTurns, int numberOfColors, int lengthOfSecretCode, ISecretCodeGenerator secretCodeGenerator)
+        public Mastermind(IMastermindSettings settings, ColorSequence secretCode = null)
         {
-            this._numberOfTurns = numberOfTurns;
-            this._numberOfColors = numberOfColors;
-            this._lengthOfSecretCode = lengthOfSecretCode;
+            Settings = settings;
             CheckIfSettingsWithinRange();
             CurrentTurn = 0;
-            SecretCode = secretCodeGenerator.GenerateSecretCode(NumberOfColors, LengthOfSecretCode);
+            if (secretCode != null)
+            {
+                SecretCode = secretCode;
+                if (SecretCode.Contains(0))
+                    throw new ArgumentException("The secret code is not completely filled in.");    
+            }
+            else
+            {
+                ISecretCodeGenerator secretCodeGenerator = new RandomPatternGenerator();
+                SecretCode = secretCodeGenerator.GenerateSecretCode(NumberOfColors, LengthOfSecretCode);
+            }
+            
             AllFeedback = new List<Feedback>(NumberOfTurns);
             Guesses = new List<ColorSequence>(NumberOfTurns);
         }
 
-        public Mastermind(int numberOfTurns, int numberOfColors, ColorSequence secretCode) : this(numberOfTurns, numberOfColors, secretCode.Length)
-        {
-            SecretCode = secretCode;
-            if (SecretCode.Contains(0))
-                throw new ArgumentException("The secret code is not completely filled in.");           
-        }
-
-        public Mastermind(IMastermindSettings settings, ColorSequence secretCode) : this(settings.NumberOfTurns, settings.NumberOfColors, secretCode)
-        { }
-
         public Mastermind(MastermindMemento memento)
         {
-            _numberOfTurns = memento.NumberOfTurns;
-            _numberOfColors = memento.NumberOfColors;
-            _lengthOfSecretCode = memento.LengthOfSecretCode;
+            Settings = new MastermindSettings();
+            Settings.NumberOfTurns = memento.NumberOfTurns;
+            Settings.NumberOfColors = memento.NumberOfColors;
+            Settings.LengthOfSecretCode = memento.LengthOfSecretCode;
             CurrentTurn = memento.CurrentTurn;
             SecretCode = new ColorSequence(memento.SecretCode);
             AllFeedback = new List<Feedback>();
@@ -58,18 +52,7 @@ namespace JasperSpruytte.MastermindWindows.Game
         #endregion Constructors
 
         #region Fields
-
-        private readonly int _numberOfTurns;
-        private readonly int _numberOfColors;
-        private readonly int _lengthOfSecretCode;
-
-        public const int MinimumNumberOfTurns = 1;
-        public const int MaximumNumberOfTurns = 15;
-        public const int MinimumNumberOfColors = 1;
-        public const int MaximumNumberOfColors = 10;
-        public const int MinimumLengthOfSecretCode = 1;
-        public const int MaximumLengthOfSecretCode = 10;
-
+        
         private DateTime _lastMementoCreatedOn = DateTime.MinValue;
 
         #endregion Fields
@@ -78,17 +61,17 @@ namespace JasperSpruytte.MastermindWindows.Game
 
         public int NumberOfTurns
         {
-            get { return _numberOfTurns; }
+            get { return Settings.NumberOfTurns; }
         }
 
         public int NumberOfColors
         {
-            get { return _numberOfColors; }
+            get { return Settings.NumberOfColors; }
         }
 
         public int LengthOfSecretCode
         {
-            get { return _lengthOfSecretCode; }
+            get { return Settings.LengthOfSecretCode; }
         }
 
         public int CurrentTurn
@@ -102,6 +85,7 @@ namespace JasperSpruytte.MastermindWindows.Game
         public bool PlayerWon { get; private set; }
         public List<Feedback> AllFeedback { get; private set; }
         public List<ColorSequence> Guesses { get; private set; }
+        public IMastermindSettings Settings { get; private set; }
 
         #endregion Properties
 
@@ -142,17 +126,17 @@ namespace JasperSpruytte.MastermindWindows.Game
 
         private void CheckIfSettingsWithinRange()
         {
-            if (NumberOfTurns < MinimumNumberOfTurns || NumberOfTurns > MaximumNumberOfTurns)
+            if (NumberOfTurns < Settings.MinimumNumberOfTurns || NumberOfTurns > Settings.MaximumNumberOfTurns)
             {
-                throw new ArgumentOutOfRangeException("The number of colors has to be between " + MinimumNumberOfTurns +" and " + MaximumNumberOfTurns + ".");
+                throw new ArgumentOutOfRangeException("The number of colors has to be between " + Settings.MinimumNumberOfTurns + " and " + Settings.MaximumNumberOfTurns + ".");
             }
-            if (NumberOfColors < MinimumNumberOfColors || NumberOfColors > MaximumNumberOfColors)
+            if (NumberOfColors < Settings.MinimumNumberOfColors || NumberOfColors > Settings.MaximumNumberOfColors)
             {
-                throw new ArgumentOutOfRangeException("The number of colors has to be between " + MinimumNumberOfColors + " and " + MaximumNumberOfColors + ".");
+                throw new ArgumentOutOfRangeException("The number of colors has to be between " + Settings.MinimumNumberOfColors + " and " + Settings.MaximumNumberOfColors + ".");
             }
-            if (LengthOfSecretCode < MinimumLengthOfSecretCode || LengthOfSecretCode > MaximumLengthOfSecretCode)
+            if (LengthOfSecretCode < Settings.MinimumLengthOfSecretCode || LengthOfSecretCode > Settings.MaximumLengthOfSecretCode)
             {
-                throw new ArgumentOutOfRangeException("The length of the secret code has to be between " + MinimumLengthOfSecretCode + " and " + MaximumLengthOfSecretCode + ".");
+                throw new ArgumentOutOfRangeException("The length of the secret code has to be between " + Settings.MinimumLengthOfSecretCode + " and " + Settings.MaximumLengthOfSecretCode + ".");
             }
         }
 

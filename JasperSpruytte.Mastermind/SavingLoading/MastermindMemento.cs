@@ -20,5 +20,31 @@ namespace JasperSpruytte.MastermindWindows.SavingLoading
         public List<int[]> Feedback { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime PreviousMementoCreatedOn { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || (obj is MastermindMemento))
+            {
+                return false;
+            }
+
+            MastermindMemento objMemento = obj as MastermindMemento;
+
+            return NumberOfTurns == objMemento.NumberOfTurns &&
+                NumberOfColors == objMemento.NumberOfColors &&
+                LengthOfSecretCode == objMemento.LengthOfSecretCode &&
+                UserIsGuessing == objMemento.UserIsGuessing &&
+                CurrentTurn == objMemento.CurrentTurn &&
+                SecretCode == objMemento.SecretCode &&
+                Guesses.Equals(objMemento.Guesses) &&
+                Feedback.Equals(objMemento.Feedback) &&
+                CreatedOn == objMemento.CreatedOn &&
+                PreviousMementoCreatedOn == objMemento.CreatedOn;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

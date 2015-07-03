@@ -57,13 +57,14 @@
     <Compile Include="FixedCodeGenerator.cs" />
     <Compile Include="MastermindUnitTests.cs" />
     <Compile Include="Presenters\SettingsViewPresenterTests.cs" />
+    <Compile Include="SavingLoading\MastermindMementoTests.cs" />
     <Compile Include="TestObjectFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PatternTest.cs" />
     <Compile Include="PegTests.cs" />
     <Compile Include="FeedbackTests.cs" />
     <Compile Include="MastermindAIPlayerTests.cs" />
-    <Compile Include="GameViewPresenterTests.cs" />
+    <Compile Include="Presenters\GameViewPresenterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JasperSpruytte.Mastermind\JasperSpruytte.Mastermind.csproj">

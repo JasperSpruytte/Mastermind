@@ -50,6 +50,7 @@
     <Compile Include="Game\MastermindSettings.cs" />
     <Compile Include="Presenters\GameViewPresenter.cs" />
     <Compile Include="Presenters\SettingsViewPresenter.cs" />
+    <Compile Include="SavingLoading\IMastermindRepository.cs" />
     <Compile Include="Views\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,7 +110,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

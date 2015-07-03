@@ -4,6 +4,7 @@ using FakeItEasy;
 using JasperSpruytte.MastermindWindows.Game;
 using JasperSpruytte.MastermindWindows.Views;
 using JasperSpruytte.MastermindWindows.Presenters;
+using JasperSpruytte.MastermindWindows.SavingLoading;
 
 namespace MastermindUnitTests.Presenters
 {
@@ -19,13 +20,15 @@ namespace MastermindUnitTests.Presenters
         public void InitializeSettingsViewPresenter()
         {
             view = A.Fake<ISettingsView>();
-            mastermindSettings = A.Fake<IMastermindSettings>();
+            TestObjectFactory factory = new TestObjectFactory();
+            mastermindSettings = factory.CreateMastermindSettings();
+            IMastermindRepository mastermindRepository = A.Fake<IMastermindRepository>();
             mastermindSettings.NumberOfTurns = 12;
             mastermindSettings.NumberOfColors = 6;
             mastermindSettings.LengthOfSecretCode = 4;
             mastermindSettings.UserIsGuessing = true;
             IGameView gameView = A.Fake<IGameView>();
-            gameViewPresenter = new GameViewPresenter(gameView, mastermindSettings);
+            gameViewPresenter = new GameViewPresenter(gameView, mastermindSettings, mastermindRepository);
 
             presenter = new SettingsViewPresenter(view, gameViewPresenter);
         }

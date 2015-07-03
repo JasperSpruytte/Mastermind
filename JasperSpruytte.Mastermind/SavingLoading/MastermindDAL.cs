@@ -6,7 +6,7 @@ using System;
 
 namespace JasperSpruytte.MastermindWindows.SavingLoading
 {
-    class MastermindDAL
+    class MastermindDAL : IMastermindRepository
     {
         private const string FileName = "mastermind.sav";
         private List<MastermindMemento> mementos;

@@ -1,4 +1,5 @@
 ﻿using JasperSpruytte.MastermindWindows.Game;
+using JasperSpruytte.MastermindWindows.SavingLoading;
 using JasperSpruytte.MastermindWindows.Views;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace JasperSpruytte.MastermindWindows.Presenters
         private Views.IGameView view;
         private Game.Mastermind game;
 
-        public GameViewPresenter(IGameView view, IMastermindSettings mastermindSettings, ColorSequence secretCode = null)
+        public GameViewPresenter(IGameView view, IMastermindSettings mastermindSettings, IMastermindRepository repository, ColorSequence secretCode = null)
         {
             this.view = view;
             this.MastermindSettings = mastermindSettings;
@@ -21,6 +22,7 @@ namespace JasperSpruytte.MastermindWindows.Presenters
                 game = new Mastermind(mastermindSettings, secretCode);
             else
                 game = new Mastermind(mastermindSettings);
+            view.ShowSavedGames(repository.Mementos);
         }
 
         public GameViewPresenter(IGameView view, Mastermind game)
@@ -34,12 +36,13 @@ namespace JasperSpruytte.MastermindWindows.Presenters
         public void StartNewGame()
         {
             view.EnableSaving();
-            view.InitializeUserGuessingMode(MastermindSettings.NumberOfTurns, MastermindSettings.NumberOfColors, MastermindSettings.LengthOfSecretCode);
+            view.StartNewGame(MastermindSettings);
         }
 
         public void StartNewGame(IMastermindSettings mastermindSettings)
         {
-
+            MastermindSettings = mastermindSettings;
+            view.StartNewGame(MastermindSettings);
         }
 
         public void AdvanceTurn()

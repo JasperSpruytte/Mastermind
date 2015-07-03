@@ -72,32 +72,32 @@ namespace JasperSpruytte.MastermindWindows.Game
 
         public int MinimumNumberOfTurns
         {
-            get { return Mastermind.MinimumNumberOfTurns; }
+            get { return 1; }
         }
 
         public int MaximumNumberOfTurns
         {
-            get { return Mastermind.MaximumNumberOfTurns; }
+            get { return 15; }
         }
 
         public int MinimumNumberOfColors
         {
-            get { return Mastermind.MinimumNumberOfColors; }
+            get { return 1; }
         }
 
         public int MaximumNumberOfColors
         {
-            get { return Mastermind.MaximumNumberOfColors; }
+            get { return 10; }
         }
 
         public int MinimumLengthOfSecretCode
         {
-            get { return Mastermind.MinimumLengthOfSecretCode; }
+            get { return 1; }
         }
 
         public int MaximumLengthOfSecretCode
         {
-            get { return Mastermind.MaximumLengthOfSecretCode; }
+            get { return 10; }
         }
     }
 }

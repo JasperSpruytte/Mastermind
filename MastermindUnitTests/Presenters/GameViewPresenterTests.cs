@@ -4,8 +4,9 @@ using JasperSpruytte.MastermindWindows.Game;
 using FakeItEasy;
 using JasperSpruytte.MastermindWindows.Views;
 using JasperSpruytte.MastermindWindows.Presenters;
+using JasperSpruytte.MastermindWindows.SavingLoading;
 
-namespace MastermindUnitTests
+namespace MastermindUnitTests.Presenters
 {
     [TestClass]
     public class GameViewPresenterTests
@@ -14,16 +15,19 @@ namespace MastermindUnitTests
         private IGameView view;
         private GameViewPresenter presenter;
         private IMastermindSettings mastermindSettings;
+        private IMastermindRepository repository;
 
         [TestInitialize]
         public void Initialize()
         {
             secretCode = new ColorSequence("1234");
-            mastermindSettings = A.Fake<IMastermindSettings>();
+            TestObjectFactory factory = new TestObjectFactory();
+            mastermindSettings = factory.CreateMastermindSettings();
             mastermindSettings.NumberOfTurns = 2;
             mastermindSettings.NumberOfColors = secretCode.Length;
             view = A.Fake<IGameView>();
-            presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
+            repository = A.Fake<IMastermindRepository>();
+            presenter = new GameViewPresenter(view, mastermindSettings, repository, secretCode);
             ColorSequence guess = new ColorSequence("1235");
             A.CallTo(() => view.GetGuess(A<int>.Ignored)).Returns(guess);
         }
@@ -66,14 +70,6 @@ namespace MastermindUnitTests
             presenter.AdvanceTurn();
 
             A.CallTo(() => view.ShowSecretCode(secretCode)).MustHaveHappened();
-        }
-
-        [TestMethod]
-        public void GameViewPresenter_StartNewGame_InitializesUserGuessingMode()
-        {
-            presenter.StartNewGame();
-
-            A.CallTo(() => view.InitializeUserGuessingMode(mastermindSettings.NumberOfTurns, mastermindSettings.NumberOfColors, mastermindSettings.LengthOfSecretCode)).MustHaveHappened();
         }
 
         [TestMethod]
@@ -127,7 +123,7 @@ namespace MastermindUnitTests
         public void GameViewPresenter_AdvanceTurn_ShowsCorrectMessageWhenUserLoses()
         {
             mastermindSettings.NumberOfTurns = 1;
-            presenter = new GameViewPresenter(view, mastermindSettings, secretCode);
+            presenter = new GameViewPresenter(view, mastermindSettings, repository, secretCode);
 
             presenter.AdvanceTurn();
 
@@ -142,6 +138,22 @@ namespace MastermindUnitTests
             presenter.AdvanceTurn();
 
             A.CallTo(() => view.ShowMessage("You win!")).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_StartNewGame_StartsNewGame()
+        {
+            presenter.StartNewGame();
+
+            A.CallTo(() => view.StartNewGame(mastermindSettings)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_Constructor_GetsListOfAllSavedGamesAndSendsItToTheView()
+        {
+            presenter = new GameViewPresenter(view, mastermindSettings, repository, secretCode);
+
+            A.CallTo(() => view.ShowSavedGames(repository.Mementos)).MustHaveHappened();
         }
     }
 }
