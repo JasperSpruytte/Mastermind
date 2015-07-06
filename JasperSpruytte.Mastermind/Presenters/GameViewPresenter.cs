@@ -13,11 +13,13 @@ namespace JasperSpruytte.MastermindWindows.Presenters
     {
         private Views.IGameView view;
         private Game.Mastermind game;
+        private IMastermindRepository repository;
 
         public GameViewPresenter(IGameView view, IMastermindSettings mastermindSettings, IMastermindRepository repository, ColorSequence secretCode = null)
         {
             this.view = view;
             this.MastermindSettings = mastermindSettings;
+            this.repository = repository;
             if (secretCode != null)
                 game = new Mastermind(mastermindSettings, secretCode);
             else
@@ -78,6 +80,18 @@ namespace JasperSpruytte.MastermindWindows.Presenters
             ISettingsView settingsView = new SettingsView();
             SettingsViewPresenter settingsViewPresenter = new SettingsViewPresenter(settingsView, this);
             settingsViewPresenter.ShowView();
+        }
+
+        public void SaveGame()
+        {
+            repository.Save(game.CreateMemento());
+            view.ShowSavedGames(repository.Mementos);
+        }
+
+        public void DeleteSavedGame(MastermindMemento memento)
+        {
+            repository.Delete(memento);
+            view.ShowSavedGames(repository.Mementos);
         }
     }
 }

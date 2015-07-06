@@ -152,7 +152,7 @@ namespace JasperSpruytte.MastermindWindows.Game
             }
         }
 
-        public MastermindMemento CreateMemento(bool userIsGuessing)
+        public MastermindMemento CreateMemento()
         {
             List<string> guessesAsString = new List<string>();
             List<int[]> feedbackAsArrays = new List<int[]>();
@@ -174,7 +174,7 @@ namespace JasperSpruytte.MastermindWindows.Game
                 Feedback = feedbackAsArrays,
                 PreviousMementoCreatedOn = _lastMementoCreatedOn,
                 CreatedOn = _lastMementoCreatedOn = DateTime.Now,
-                UserIsGuessing = userIsGuessing
+                UserIsGuessing = Settings.UserIsGuessing
             };
         }
 

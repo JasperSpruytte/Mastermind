@@ -45,15 +45,7 @@ namespace JasperSpruytte.MastermindWindows.SavingLoading
 
         public void Delete(MastermindMemento mementoToRemove)
         {
-            foreach (MastermindMemento memento in mementos)
-            {
-                if (memento.CreatedOn == mementoToRemove.CreatedOn)
-                {
-                    mementos.Remove(memento);
-                    break;
-                }
-            }
-
+            mementos.RemoveAll(m => m.CreatedOn == mementoToRemove.CreatedOn);
             SaveMementos();
         }
 

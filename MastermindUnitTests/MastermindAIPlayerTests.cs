@@ -8,7 +8,6 @@ namespace MastermindUnitTests
     [TestClass]
     public class MastermindAIPlayerTests
     {
-        private ISecretCodeGenerator _codeGenerator;
         private TestObjectFactory _objectFactory;
         private Mastermind _mastermind;
         private MastermindAIPlayer _player;

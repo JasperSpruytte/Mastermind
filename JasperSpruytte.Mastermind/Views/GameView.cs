@@ -398,16 +398,14 @@ namespace JasperSpruytte.MastermindWindows.Views
 
         private void tsmiSave_Click(object sender, EventArgs e)
         {
-            //_mastermindDAL.Save(_mastermind.CreateMemento(mastermindSettings.UserIsGuessing));
-            //ShowSavedGamesMenu();
+            presenter.SaveGame();
         }
 
         private void tsmiDelete_Click(object sender, EventArgs e)
         {
-            //ToolStripMenuItem tsmiDelete = sender as ToolStripMenuItem;
-            //MastermindMemento gameToDelete = tsmiDelete.Tag as MastermindMemento;
-            //_mastermindDAL.Delete(gameToDelete);
-            //ShowSavedGamesMenu();
+            ToolStripMenuItem tsmiDelete = sender as ToolStripMenuItem;
+            MastermindMemento gameToDelete = tsmiDelete.Tag as MastermindMemento;
+            presenter.DeleteSavedGame(gameToDelete);
         }
 
         private void tsmiMemento_Click(object sender, EventArgs e)

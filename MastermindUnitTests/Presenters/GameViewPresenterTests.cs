@@ -5,6 +5,7 @@ using FakeItEasy;
 using JasperSpruytte.MastermindWindows.Views;
 using JasperSpruytte.MastermindWindows.Presenters;
 using JasperSpruytte.MastermindWindows.SavingLoading;
+using System.Collections.Generic;
 
 namespace MastermindUnitTests.Presenters
 {
@@ -153,6 +154,35 @@ namespace MastermindUnitTests.Presenters
         {
             presenter = new GameViewPresenter(view, mastermindSettings, repository, secretCode);
 
+            A.CallTo(() => view.ShowSavedGames(repository.Mementos)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_Save_CallsSaveMementoOnRepository()
+        {
+            presenter.SaveGame();
+
+            A.CallTo(() => repository.Save(A<MastermindMemento>.Ignored)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_SaveGame_ReloadsSavedGames()
+        {
+            A.CallTo(() => repository.Mementos).Returns(A.Dummy<IReadOnlyCollection<MastermindMemento>>());
+
+            presenter.SaveGame();
+
+            A.CallTo(() => view.ShowSavedGames(repository.Mementos)).MustHaveHappened();
+        }
+
+        [TestMethod]
+        public void GameViewPresenter_DeleteSavedGame_DelegatesToRepositoryAndReloadsListOfSavedGames()
+        {
+            MastermindMemento memento = new MastermindMemento();
+
+            presenter.DeleteSavedGame(memento);
+
+            A.CallTo(() => repository.Delete(memento)).MustHaveHappened();
             A.CallTo(() => view.ShowSavedGames(repository.Mementos)).MustHaveHappened();
         }
     }
